@@ -21,9 +21,9 @@
         </div>
         <div class="px-4 py-2 mx-4"> 
           <div class="w-full text-center">Time</div>
-          <div class="score px-2">0:30</div>
+          <div class="score px-2">{{displaySecondsLeft}}</div>
         </div>
-        <button @click="peep" class="rounded-lg px-4 py-2 mx-2 border-2 border-green-300 shadow-lg bg-green-500 hover:bg-green-300 hover:text-green-700" >Start!</button>
+        <button @click="startGame" class="rounded-lg px-4 py-2 mx-2 border-2 border-green-300 shadow-lg bg-green-500 hover:bg-green-300 hover:text-green-700" >Start!</button>
       </div>
     </div>
 
@@ -45,7 +45,10 @@ export default {
       highScore: 0,
       score: 0,
       time: 0,
-      timeUp: 30000,
+      timeUp: false,
+      countdown: 0,
+      seconds: 10,
+      secondsLeft: 0,
       level: 1,
       lastHole: null,
       moles: [
@@ -66,6 +69,9 @@ export default {
     displayHighScore: function () {
       return this.fillWithZeros(8, this.highScore)
     },
+    displaySecondsLeft: function () {
+      return this.displayTimeLeft(this.secondsLeft)
+    },
   },
 
   mounted: function () {
@@ -78,8 +84,32 @@ export default {
   },
 
   methods: {
+    startGame: function () {
+      this.score = 0;
+      this.timeUp = false;
+      this.secondsLeft = this.seconds
+      this.timer()
+      setTimeout( () => {
+        console.log('time up!')
+        this.timeUp = true
+        }, this.seconds * 1000)
+      this.peep();
+    },
+
+    peep: function () {
+      // Get randorm time and hole
+      this.time = this.getTime(1000, 1500)/// (this.level * 0.5)
+      const hole = this.getHole()
+      hole.show = true
+      console.log(this.timeUp)
+      setTimeout( () => {
+        hole.show = false;
+        if(! this.timeUp) { this.peep() }
+        },
+        this.time);
+    },
+
     bonk: function(id) {
-      console.log(id)
       this.moles[id].show = false
       this.score += this.level * 10
       if(this.score > this.highScore) {
@@ -87,21 +117,10 @@ export default {
         localStorage.setItem('highScore', this.highScore)
       }
     },
-    
+
     getTime: function (min, max) {
       // get a random time
       return Math.round(Math.random() * (max - min) + min); // map random to [max, min]
-    },
-
-    peep: function () {
-      // Get randorm time and hole
-      this.time = this.getTime(300, 1000)/// (this.level * 0.5)
-      const hole = this.getHole()
-      hole.show = true
-      setTimeout( () => {
-        hole.show = false;
-        if(! this.timeUp) this.peep();
-        } , this.time);
     },
 
     getHole: function () {
@@ -112,7 +131,6 @@ export default {
         hole = this.moles[idx];
       } while (hole === this.lastHole)
       this.lastHole = hole;
-      console.log(hole.id)
       return hole
     },
 
@@ -122,6 +140,30 @@ export default {
         ss.unshift('0')
       }
       return ss.join('')
+    },
+
+    timer: function () {
+      // Clear, if any, the intervals
+      if(this.countdown) clearInterval(this.countdown)
+      const now = Date.now();
+      const later =  now + this.seconds * 1000
+      this.countdown = setInterval( () => {
+        this.secondsLeft = Math.round((later - Date.now()) / 1000);
+        if (this.secondsLeft < 0) {
+          clearInterval(this.countdown)
+          this.secondsLeft = 0;
+          return
+        }
+      }, 1000)
+    },
+
+    displayTimeLeft: function (seconds) {
+      const minutes = Math.floor( seconds / 60 )
+      let remSeconds = seconds % 60
+      if(remSeconds < 10) {
+        remSeconds = '0' + remSeconds
+      }
+      return `${minutes}:${remSeconds}`
     }
   }
 
