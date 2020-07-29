@@ -11,9 +11,9 @@
       </div>
     </div>
 
-    <h1 class="text-center text-3xl my-3 tracking-wider font-bolder">Whack-a-<span class="text-green-500">Vue</span>!</h1>
+    <h1 class="text-center text-3xl my-4 tracking-wider font-bolder">Whack-a-<span class="text-green-500">Vue</span>!</h1>
     
-    <div class="md:w:4/5 flex justify-center items-center my-4">
+    <div class="md:w:4/5 flex justify-center items-center my-4 bg-purple-800 rounded shadow-lg">
       <div class="flex justify-between items-center">
         <div class="mx-2"> 
           <div class="w-full text-center">Level</div>
@@ -23,7 +23,7 @@
           <div class="w-full text-center">Time</div>
           <div class="score px-2">{{displaySecondsLeft}}</div>
         </div>
-        <button @click="startGame" class="rounded-lg px-4 py-2 mx-2 border-2 border-green-300 shadow-lg bg-green-500 hover:bg-green-300 hover:text-green-700" >Start!</button>
+        <button @click="startGame" class="rounded-lg px-4 py-2 mx-2 shadow-lg bg-green-500 hover:bg-green-300 hover:text-green-700" >Start!</button>
       </div>
     </div>
 

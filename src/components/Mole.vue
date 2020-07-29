@@ -1,7 +1,7 @@
 <template>
   <div class="hole h-24 flex justify-center">
     <transition name="moleMove">
-      <img v-if="show" @click.prevent="whack" class="w-8/12 md:w-full lg:w-4/5" src="./../assets/mole.svg"/>
+      <img v-if="show" @click.prevent="whack" class="cursor-pointer w-8/12 md:w-full lg:w-4/5" src="./../assets/mole.svg"/>
     </transition>
   </div>
 </template>
