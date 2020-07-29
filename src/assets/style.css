@@ -19,7 +19,7 @@ html {
   }
   
   .score {
-    @apply tracking-wider w-full text-center rounded-lg bg-gray-900 opacity-75 text-white;
+    @apply tracking-wider w-full text-center rounded bg-gray-800 text-white;
   }
   
   .hole {

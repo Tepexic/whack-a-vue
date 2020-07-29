@@ -1,35 +1,37 @@
 <template>
   <div id="app" class="h-screen w-full bg-purple-900 px-4 pt-4 text-yellow-100 shadow-lg md:px-48 md:pt-20 lg:px-60">
-    <div class="flex items-center justify-between">
-      <div class="text-sm flex flex-col justify-center">
-        <div class="tracking-wider text-center">HIGH SCORE</div>
-        <div class="score">{{displayHighScore}}</div>
-      </div>
-      <div class="text-sm flex flex-col justify-center tracking-wider">
-        <div class="tracking-wider text-center">YOUR SCORE</div>
-        <div class="score">{{displayScore}}</div>
-      </div>
-    </div>
-
-    <h1 class="text-center text-3xl my-4 tracking-wider font-bolder">Whack-a-<span class="text-green-500">Vue</span>!</h1>
-    
-    <div class="md:w:4/5 flex justify-center items-center my-4 bg-purple-800 rounded shadow-lg">
-      <div class="flex justify-between items-center">
-        <div class="mx-2"> 
-          <div class="w-full text-center">Level</div>
-          <div class="score px-2">{{level}}</div>
+    <div class="border-2 border-gray-200 bg-gray-900 p-2 md:p-8 rounded-lg shadow-lg">
+      <div class="flex items-center justify-between">
+        <div class="text-sm flex flex-col justify-center">
+          <div class="tracking-wider text-center">HIGH SCORE</div>
+          <div class="score">{{displayHighScore}}</div>
         </div>
-        <div class="px-4 py-2 mx-4"> 
-          <div class="w-full text-center">Time</div>
-          <div class="score px-2">{{displaySecondsLeft}}</div>
+        <div class="text-sm flex flex-col justify-center tracking-wider">
+          <div class="tracking-wider text-center">YOUR SCORE</div>
+          <div class="score">{{displayScore}}</div>
         </div>
-        <button @click="startGame" class="rounded-lg px-4 py-2 mx-2 shadow-lg bg-green-500 hover:bg-green-300 hover:text-green-700" >Start!</button>
       </div>
-    </div>
+
+      <h1 class="text-center text-3xl my-4 tracking-wider font-bolder">Whack-a-<span class="text-green-500">Vue</span>!</h1>
+      
+      <div class="md:w:4/5 flex justify-center items-center my-4 bg-orange-600 rounded shadow-inner">
+        <div class="flex justify-between items-center">
+          <div class="mx-2"> 
+            <div class="w-full text-center">Level</div>
+            <div class="score px-2">{{level}}</div>
+          </div>
+          <div class="px-4 py-2 mx-4"> 
+            <div class="w-full text-center">Time</div>
+            <div class="score px-2">{{displaySecondsLeft}}</div>
+          </div>
+          <button @click="startGame" class="rounded-lg px-4 py-2 mx-2 shadow-lg bg-green-500 hover:bg-green-300 hover:text-green-700" >Start!</button>
+        </div>
+      </div>
 
 
-    <div class="grid grid-cols-3 md:gap-4 rounded shadow-lg md:4/5 bg-yellow-400 py-2">
-      <Mole v-for="m in moles" v-on:whacked="bonk" :id="m.id" :show="m.show" :key="m.id"/>
+      <div class="grid grid-cols-3 md:gap-4 rounded shadow-inner md:4/5 bg-yellow-400 p-2">
+        <Mole v-for="m in moles" v-on:whacked="bonk" :id="m.id" :show="m.show" :key="m.id"/>
+      </div>
     </div>
   </div>
 </template>
@@ -86,25 +88,33 @@ export default {
   methods: {
     startGame: function () {
       this.score = 0;
+      this.level = 1;
+      this.runLevel()
+    },
+
+    runLevel: function () {
       this.timeUp = false;
       this.secondsLeft = this.seconds
       this.timer()
       setTimeout( () => {
-        console.log('time up!')
         this.timeUp = true
         }, this.seconds * 1000)
-      this.peep();
+      this.peep()
     },
 
     peep: function () {
-      // Get randorm time and hole
-      this.time = this.getTime(1000, 1500)/// (this.level * 0.5)
+      this.time = this.getTime(83.33 * (1 - this.level) + 1000, 111.11*(1 - this.level) + 1500)
       const hole = this.getHole()
       hole.show = true
-      console.log(this.timeUp)
       setTimeout( () => {
         hole.show = false;
-        if(! this.timeUp) { this.peep() }
+        if(! this.timeUp) {
+          this.peep()
+        } else {
+          if(this.level === 10) return
+          this.level ++
+          this.runLevel()
+        }
         },
         this.time);
     },
