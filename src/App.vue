@@ -1,5 +1,5 @@
 <template>
-  <div id="app" class="h-screen w-full bg-purple-900 px-4 pt-4 text-yellow-100 shadow-lg md:px-48 md:pt-20">
+  <div id="app" class="h-screen w-full bg-purple-900 px-4 pt-4 text-yellow-100 shadow-lg md:px-48 md:pt-20 lg:px-60">
     <div class="flex items-center justify-between">
       <div class="text-sm flex flex-col justify-center">
         <div class="tracking-wider text-center">HIGH SCORE</div>
@@ -23,7 +23,7 @@
           <div class="w-full text-center">Time</div>
           <div class="score px-2">0:30</div>
         </div>
-        <button @click="getHole" class="rounded-lg px-4 py-2 mx-2 border-2 border-green-300 shadow-lg bg-green-500 hover:bg-green-300 hover:text-green-700" >Start!</button>
+        <button @click="peep" class="rounded-lg px-4 py-2 mx-2 border-2 border-green-300 shadow-lg bg-green-500 hover:bg-green-300 hover:text-green-700" >Start!</button>
       </div>
     </div>
 
@@ -45,14 +45,15 @@ export default {
       highScore: 0,
       score: 0,
       time: 0,
+      timeUp: 30000,
       level: 1,
       lastHole: null,
       moles: [
         {id:0, show: false},
         {id:1, show: false},
-        {id:2, show: true},
+        {id:2, show: false},
         {id:3, show: false},
-        {id:4, show: true},
+        {id:4, show: false},
         {id:5, show: false},
       ]
     }
@@ -92,7 +93,18 @@ export default {
       return Math.round(Math.random() * (max - min) + min); // map random to [max, min]
     },
 
-    getHole: function randomHole() {
+    peep: function () {
+      // Get randorm time and hole
+      this.time = this.getTime(300, 1000)/// (this.level * 0.5)
+      const hole = this.getHole()
+      hole.show = true
+      setTimeout( () => {
+        hole.show = false;
+        if(! this.timeUp) this.peep();
+        } , this.time);
+    },
+
+    getHole: function () {
       // Get a random hole, don't repeat last one
       let hole
       do {
@@ -101,7 +113,7 @@ export default {
       } while (hole === this.lastHole)
       this.lastHole = hole;
       console.log(hole.id)
-      return hole.show = true;
+      return hole
     },
 
     fillWithZeros: function (max, score) {
