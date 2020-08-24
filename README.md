@@ -14,7 +14,7 @@ The score is multiplied by the level(1-10), which is based on a random time that
 
 The countdoun timer resets at the end of every level. 
 
-All CSS styling is handled by TailwindCSS.
+All CSS styling is handled by TailwindCSS. [See it live on Netlify](https://whack-a-vue.netlify.app/)
 
 
 ## Dependencies
